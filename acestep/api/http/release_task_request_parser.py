@@ -8,6 +8,7 @@ import urllib.parse
 from typing import Any, Callable, Dict, Optional, Tuple
 
 from fastapi import HTTPException, Request
+from loguru import logger
 
 from acestep.api.http.release_task_request_builder import build_generate_music_request
 
@@ -109,9 +110,18 @@ async def parse_release_task_request(
 
             ref_upload = form.get("ref_audio") or form.get("reference_audio")
             ctx_upload = form.get("ctx_audio") or form.get("src_audio")
+            logger.debug(
+                "[release_task] Multipart form received: ref_upload={}, ctx_upload={}",
+                type(ref_upload).__name__ if ref_upload else None,
+                type(ctx_upload).__name__ if ctx_upload else None,
+            )
             if isinstance(ref_upload, upload_file_type):
                 reference_audio_path = await save_upload_to_temp(ref_upload, prefix="ref_audio")
                 temp_files.append(reference_audio_path)
+                logger.debug(
+                    "[release_task] Reference audio saved to temp: {}",
+                    reference_audio_path,
+                )
             else:
                 reference_audio_path = validate_audio_path(
                     str(form.get("ref_audio_path") or form.get("reference_audio_path") or "").strip() or None

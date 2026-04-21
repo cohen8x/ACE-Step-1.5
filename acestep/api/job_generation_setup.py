@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Callable, Optional
 
+from loguru import logger
+
 from acestep.inference import GenerationConfig, GenerationParams
 
 # Sentinel value indicating the LM should auto-calculate duration from
@@ -150,6 +152,13 @@ def build_generation_setup(
         default_dit_instruction=default_dit_instruction,
         task_instructions=task_instructions,
     )
+
+    if req.reference_audio_path:
+        logger.debug(
+            "[build_generation_setup] reference_audio_path={}, exists={}",
+            req.reference_audio_path,
+            __import__("os").path.exists(req.reference_audio_path),
+        )
 
     params = GenerationParams(
         task_type=req.task_type,
