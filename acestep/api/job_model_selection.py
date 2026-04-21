@@ -32,6 +32,10 @@ def select_generation_handler(
     if not requested_model:
         return selected_handler, selected_model_name
 
+    # Check primary model first
+    if requested_model == selected_model_name:
+        return selected_handler, selected_model_name
+
     model_matched = False
 
     if app_state.handler2 and getattr(app_state, "_initialized2", False):

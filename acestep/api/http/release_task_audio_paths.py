@@ -8,7 +8,6 @@ from pathlib import Path
 from typing import Optional
 
 from fastapi import HTTPException
-from loguru import logger
 from starlette.datastructures import UploadFile as StarletteUploadFile
 
 
@@ -92,8 +91,8 @@ async def save_upload_to_temp(upload: StarletteUploadFile, *, prefix: str) -> st
         except Exception:
             pass
     file_size_kb = os.path.getsize(path) / 1024
-    logger.debug(
-        "[save_upload_to_temp] Saved uploaded audio: path={}, size={:.1f}KB, original_name={}",
-        path, file_size_kb, upload.filename,
+    print(
+        f"[API Server] Saved uploaded audio: path={path}, "
+        f"size={file_size_kb:.1f}KB, original_name={upload.filename}"
     )
     return path
